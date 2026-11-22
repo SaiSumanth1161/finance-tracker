@@ -1,0 +1,236 @@
+{
+  "_about": "Golden cases for the money logic. Shared by the Python tests and any future JavaScript port. Every amount is integer cents. People are short keys; 'me' is the owner.",
+  "sort_order": ["me", "roommate1", "roommate2", "others"],
+
+  "splits": [
+    {"name": "equal: $100.00 / 3, extra cent goes to the payer",
+     "method": "equal", "total_cents": 10000, "people": ["me", "roommate1", "roommate2"], "payer": "me",
+     "expected": {"me": 3334, "roommate1": 3333, "roommate2": 3333}},
+    {"name": "equal: a roommate paid, so the extra cent goes to them",
+     "method": "equal", "total_cents": 10000, "people": ["me", "roommate1", "roommate2"], "payer": "roommate1",
+     "expected": {"me": 3333, "roommate1": 3334, "roommate2": 3333}},
+    {"name": "equal: two leftover cents go to the payer, then by sort order",
+     "method": "equal", "total_cents": 10001, "people": ["me", "roommate1", "roommate2"], "payer": "roommate2",
+     "expected": {"me": 3334, "roommate1": 3333, "roommate2": 3334}},
+    {"name": "equal: payer is not part of the split, pennies follow sort order",
+     "method": "equal", "total_cents": 10000, "people": ["others", "roommate2", "roommate1"], "payer": "me",
+     "expected": {"roommate1": 3334, "roommate2": 3333, "others": 3333}},
+    {"name": "equal: $90.00 / 3 has no leftover",
+     "method": "equal", "total_cents": 9000, "people": ["me", "roommate1", "roommate2"], "payer": "me",
+     "expected": {"me": 3000, "roommate1": 3000, "roommate2": 3000}},
+    {"name": "equal: 1 cent between two people",
+     "method": "equal", "total_cents": 1, "people": ["me", "roommate1"], "payer": "me",
+     "expected": {"me": 1, "roommate1": 0}},
+    {"name": "only_me: the whole amount is my share",
+     "method": "only_me", "total_cents": 4599, "payer": "me",
+     "expected": {"me": 4599}},
+    {"name": "exact: the total is the sum of the typed shares",
+     "method": "exact", "exact": {"me": 2550, "roommate1": 1000, "others": 450}, "payer": "me",
+     "expected_total_cents": 4000, "expected": {"me": 2550, "roommate1": 1000, "others": 450}},
+    {"name": "exact: a zero share drops that person",
+     "method": "exact", "exact": {"me": 2000, "roommate1": 0}, "payer": "me",
+     "expected_total_cents": 2000, "expected": {"me": 2000}},
+    {"name": "percent: 50 / 30 / 20 of $100.00",
+     "method": "percent", "total_cents": 10000, "percents": {"me": "50", "roommate1": "30", "roommate2": "20"}, "payer": "me",
+     "expected": {"me": 5000, "roommate1": 3000, "roommate2": 2000}},
+    {"name": "percent: 33.33 / 33.33 / 33.34 of $100.00",
+     "method": "percent", "total_cents": 10000, "percents": {"me": "33.33", "roommate1": "33.33", "roommate2": "33.34"}, "payer": "me",
+     "expected": {"me": 3333, "roommate1": 3333, "roommate2": 3334}},
+    {"name": "percent: 50 / 50 of $0.99, leftover cent goes to the payer",
+     "method": "percent", "total_cents": 99, "percents": {"me": "50", "roommate1": "50"}, "payer": "roommate1",
+     "expected": {"me": 49, "roommate1": 50}},
+    {"name": "percent: a 0% person is left out",
+     "method": "percent", "total_cents": 5000, "percents": {"me": "100", "roommate1": "0"}, "payer": "me",
+     "expected": {"me": 5000}}
+  ],
+
+  "split_errors": [
+    {"name": "percent must sum to 100", "method": "percent", "total_cents": 10000,
+     "percents": {"me": "50", "roommate1": "40"}, "payer": "me"},
+    {"name": "percent over 100", "method": "percent", "total_cents": 10000,
+     "percents": {"me": "60", "roommate1": "60"}, "payer": "me"},
+    {"name": "equal needs at least one person", "method": "equal", "total_cents": 5000, "people": [], "payer": "me"},
+    {"name": "total must be more than zero", "method": "equal", "total_cents": 0, "people": ["me", "roommate1"], "payer": "me"},
+    {"name": "only_me needs a positive total", "method": "only_me", "total_cents": 0, "payer": "me"},
+    {"name": "exact shares cannot be negative", "method": "exact", "exact": {"me": -100, "roommate1": 200}, "payer": "me"},
+    {"name": "exact needs at least one share", "method": "exact", "exact": {"me": 0}, "payer": "me"}
+  ],
+
+  "validate_errors": [
+    {"name": "shares must sum exactly to the total", "total_cents": 9000, "shares": {"me": 3000, "roommate1": 3000}},
+    {"name": "no people", "total_cents": 9000, "shares": {}},
+    {"name": "negative share", "total_cents": 1000, "shares": {"me": 2000, "roommate1": -1000}},
+    {"name": "zero total", "total_cents": 0, "shares": {"me": 0}}
+  ],
+
+  "parse_amount": [
+    {"text": "90", "expected_cents": 9000},
+    {"text": "$1,234.50", "expected_cents": 123450},
+    {"text": "12.5", "expected_cents": 1250},
+    {"text": " 0.07 ", "expected_cents": 7},
+    {"text": "19.999", "expected_cents": 2000}
+  ],
+  "parse_amount_errors": ["", "abc", "-5", "1.2.3"],
+
+  "format": [
+    {"cents": 123456, "plus": false, "expected": "$1,234.56"},
+    {"cents": -3000, "plus": false, "expected": "−$30.00"},
+    {"cents": 3000, "plus": true, "expected": "+$30.00"},
+    {"cents": -3000, "plus": true, "expected": "−$30.00"},
+    {"cents": 0, "plus": true, "expected": "$0.00"},
+    {"cents": 5, "plus": false, "expected": "$0.05"}
+  ],
+
+  "signs": [
+    {"name": "debit (Money out) is negative", "direction": "debit", "total_cents": 9000, "expected_signed_cents": -9000},
+    {"name": "credit (Money in) is positive", "direction": "credit", "total_cents": 9000, "expected_signed_cents": 9000}
+  ],
+
+  "savings": [
+    {"name": "$500 Money out to stocks counts as +500 saved",
+     "direction": "debit", "total_cents": 50000, "expected_saved_cents": 50000},
+    {"name": "$1,000 Money in from high-yield savings counts as -1,000 saved",
+     "direction": "credit", "total_cents": 100000, "expected_saved_cents": -100000}
+  ],
+
+  "kpi_formulas": [
+    {"name": "Split: household expense -$90 with my share -$30 gives $60",
+     "household_expense_cents": -9000, "my_share_expense_cents": -3000, "expected_split_cents": 6000},
+    {"name": "Net = income + expense (expense is negative)",
+     "income_cents": 500000, "expense_cents": -120000, "expected_net_cents": 380000},
+    {"name": "Unallocated = Net - Saved",
+     "net_cents": 380000, "net_saved_cents": 150000, "expected_unallocated_cents": 230000}
+  ],
+
+  "balances": [
+    {"name": "I pay $90 groceries split 3 ways: I am +$60, each roommate is -$30",
+     "transactions": [
+       {"direction": "debit", "total_cents": 9000, "payer": "me", "shares": {"me": 3000, "roommate1": 3000, "roommate2": 3000}}
+     ],
+     "settlements": [],
+     "expected_nets": {"me": 6000, "roommate1": -3000, "roommate2": -3000},
+     "expected_plan": [["roommate1", "me", 3000], ["roommate2", "me", 3000]]},
+    {"name": "the same $90, then both roommates settle: everyone is at zero",
+     "transactions": [
+       {"direction": "debit", "total_cents": 9000, "payer": "me", "shares": {"me": 3000, "roommate1": 3000, "roommate2": 3000}}
+     ],
+     "settlements": [
+       {"from": "roommate1", "to": "me", "amount_cents": 3000},
+       {"from": "roommate2", "to": "me", "amount_cents": 3000}
+     ],
+     "expected_nets": {"me": 0, "roommate1": 0, "roommate2": 0},
+     "expected_plan": []},
+    {"name": "a roommate pays for a shared bill, so I owe them my share",
+     "transactions": [
+       {"direction": "debit", "total_cents": 6000, "payer": "roommate1", "shares": {"me": 2000, "roommate1": 2000, "roommate2": 2000}}
+     ],
+     "settlements": [],
+     "expected_nets": {"me": -2000, "roommate1": 4000, "roommate2": -2000},
+     "expected_plan": [["me", "roommate1", 2000], ["roommate2", "roommate1", 2000]]},
+    {"name": "a refund I received on a shared bill lowers what the roommates owe",
+     "transactions": [
+       {"direction": "debit", "total_cents": 9000, "payer": "me", "shares": {"me": 3000, "roommate1": 3000, "roommate2": 3000}},
+       {"direction": "credit", "total_cents": 900, "payer": "me", "shares": {"me": 300, "roommate1": 300, "roommate2": 300}}
+     ],
+     "settlements": [],
+     "expected_nets": {"me": 5400, "roommate1": -2700, "roommate2": -2700},
+     "expected_plan": [["roommate1", "me", 2700], ["roommate2", "me", 2700]]},
+    {"name": "an only-me expense changes nobody's balance",
+     "transactions": [
+       {"direction": "debit", "total_cents": 4500, "payer": "me", "shares": {"me": 4500}}
+     ],
+     "settlements": [],
+     "expected_nets": {"me": 0},
+     "expected_plan": []},
+    {"name": "greedy plan: the biggest debtor pays the biggest creditor first",
+     "transactions": [
+       {"direction": "debit", "total_cents": 9000, "payer": "me", "shares": {"me": 3000, "roommate1": 3000, "roommate2": 3000}},
+       {"direction": "debit", "total_cents": 3000, "payer": "roommate2", "shares": {"roommate1": 3000}}
+     ],
+     "settlements": [],
+     "expected_nets": {"me": 6000, "roommate1": -6000, "roommate2": 0},
+     "expected_plan": [["roommate1", "me", 6000]]}
+  ],
+
+  "ledger": {
+    "_about": "A small set of transactions for the view, KPI, period-filter and aggregate() tests. The 'kpis' and 'aggregate' expectations use every transaction dated in 2026.",
+    "transactions": [
+      {"id": "t1", "date": "2026-01-05", "description": "Paycheck", "direction": "credit", "subcategory": "salary",
+       "payment_mode": "Zelle", "payer": "me", "split_method": "only_me", "shares": {"me": 500000}},
+      {"id": "t2", "date": "2026-01-10", "description": "Costco", "direction": "debit", "subcategory": "groceries",
+       "payment_mode": "mastercard", "payer": "me", "split_method": "equal", "shares": {"me": 3000, "roommate1": 3000, "roommate2": 3000}},
+      {"id": "t3", "date": "2026-01-12", "description": "Costco", "direction": "credit", "subcategory": "groceries",
+       "payment_mode": "mastercard", "payer": "me", "split_method": "equal", "shares": {"me": 300, "roommate1": 300, "roommate2": 300}},
+      {"id": "t4", "date": "2026-01-15", "description": "Brokerage deposit", "direction": "debit", "subcategory": "stocks",
+       "payment_mode": "Zelle", "payer": "me", "split_method": "only_me", "shares": {"me": 50000}},
+      {"id": "t5", "date": "2026-01-20", "description": "Checking to savings acct", "direction": "debit", "subcategory": "bank transfer",
+       "payment_mode": "Zelle", "payer": "me", "split_method": "only_me", "shares": {"me": 20000}},
+      {"id": "t6", "date": "2026-02-03", "description": "Rent", "direction": "debit", "subcategory": "rent",
+       "payment_mode": "Zelle", "payer": "me", "split_method": "equal", "shares": {"me": 100000, "roommate1": 100000, "roommate2": 100000}},
+      {"id": "t7", "date": "2026-02-10", "description": "HYSA withdrawal", "direction": "credit", "subcategory": "high-yield savings",
+       "payment_mode": "Zelle", "payer": "me", "split_method": "only_me", "shares": {"me": 100000}},
+      {"id": "t8", "date": "2026-03-08", "description": "Chipotle", "direction": "debit", "subcategory": "outside food",
+       "payment_mode": "visa", "payer": "me", "split_method": "only_me", "shares": {"me": 4500}},
+      {"id": "t9", "date": "2026-03-09", "description": "Family phone plan", "direction": "debit", "subcategory": "phone",
+       "payment_mode": "visa", "payer": "me", "split_method": "exact", "shares": {"me": 4000, "roommate1": 3000, "others": 3000}},
+      {"id": "t10", "date": "2025-12-28", "description": "Walmart", "direction": "debit", "subcategory": "groceries",
+       "payment_mode": "mastercard", "payer": "me", "split_method": "equal", "shares": {"me": 3000, "roommate1": 3000}},
+      {"id": "t11", "date": "2026-03-15", "description": "Sold old bike", "direction": "credit", "subcategory": "misc-income",
+       "payment_mode": "Cash", "payer": "me", "split_method": "only_me", "shares": {"me": 2000}}
+    ],
+
+    "view_rows": [
+      {"id": "t2", "category": "Home", "category_type": "Expense", "sign": -1, "total_cents": 9000,
+       "signed_total_cents": -9000, "my_share_cents": 3000, "my_share_signed_cents": -3000, "year": 2026, "month": "2026-01"},
+      {"id": "t3", "category": "Home", "category_type": "Expense", "sign": 1, "total_cents": 900,
+       "signed_total_cents": 900, "my_share_cents": 300, "my_share_signed_cents": 300, "year": 2026, "month": "2026-01"},
+      {"id": "t7", "category": "HYSA", "category_type": "Savings", "sign": 1, "total_cents": 100000,
+       "signed_total_cents": 100000, "my_share_cents": 100000, "my_share_signed_cents": 100000, "year": 2026, "month": "2026-02"}
+    ],
+
+    "kpis": {
+      "_about": "Period = year 2026. Refund t3 lowers the expense. Savings (t4, t7) and Not Reported (t5) rows are left out of income and expense.",
+      "me": {"income": 502000, "expense": -111200, "net": 390800, "my_share": -111200, "split": 211400,
+             "saved": 50000, "withdrawn": 100000, "net_saved": -50000, "unallocated": 440800},
+      "household": {"income": 502000, "expense": -322600, "net": 179400, "my_share": -111200, "split": 211400,
+                    "saved": 50000, "withdrawn": 100000, "net_saved": -50000, "unallocated": 229400},
+      "roommate1": {"income": 0, "expense": -105700, "net": -105700, "my_share": -111200, "split": 211400,
+               "saved": 0, "withdrawn": 0, "net_saved": 0, "unallocated": -105700}
+    },
+
+    "period_filter": {
+      "_about": "Picking Jan + Mar of 2026 leaves out February and the 2025 row.",
+      "years": [2026], "months": [1, 3],
+      "expected_ids": ["t1", "t2", "t3", "t4", "t5", "t8", "t9", "t11"]
+    },
+
+    "aggregate": [
+      {"measure": "Expense", "group_by": ["Category"], "view": "me",
+       "expected": [["Home", -106700], ["Personal", -4500]]},
+      {"measure": "Expense", "group_by": ["Month"], "view": "household",
+       "expected": [["2026-01", -8100], ["2026-02", -300000], ["2026-03", -14500]]},
+      {"measure": "Expense", "group_by": ["Person"], "view": "household",
+       "expected": [["me", -111200], ["roommate1", -105700], ["roommate2", -102700], ["others", -3000]]},
+      {"measure": "Expense", "group_by": ["Subcategory"], "view": "roommate1",
+       "expected": [["rent", -100000], ["phone", -3000], ["groceries", -2700]]},
+      {"measure": "Expense", "group_by": ["Payment mode"], "view": "household",
+       "expected": [["Zelle", -300000], ["visa", -14500], ["mastercard", -8100]]},
+      {"measure": "Income", "group_by": ["Subcategory"], "view": "me",
+       "expected": [["salary", 500000], ["misc-income", 2000]]},
+      {"measure": "Net", "group_by": ["Month"], "view": "me",
+       "expected": [["2026-01", 497300], ["2026-02", -100000], ["2026-03", -6500]]},
+      {"measure": "My share", "group_by": ["Category"], "view": "household",
+       "expected": [["Home", -106700], ["Personal", -4500]]},
+      {"measure": "Split", "group_by": ["Person"], "view": "me",
+       "expected": [["roommate1", 105700], ["roommate2", 102700], ["others", 3000]]},
+      {"measure": "Saved", "group_by": ["Subcategory"], "view": "me",
+       "expected": [["high-yield savings", -100000], ["stocks", 50000]]},
+      {"measure": "Count", "group_by": ["Category type"], "view": "household",
+       "expected": [["Expense", 5], ["Income", 2], ["Savings", 2]]},
+      {"measure": "Avg", "group_by": [], "view": "me", "expected": [[-22240]]},
+      {"measure": "Expense", "group_by": ["Month", "Category"], "view": "me",
+       "expected": [["2026-01", "Home", -2700], ["2026-02", "Home", -100000], ["2026-03", "Home", -4000], ["2026-03", "Personal", -4500]]},
+      {"measure": "Expense", "group_by": [], "view": "household", "expected": [[-322600]]}
+    ]
+  }
+}

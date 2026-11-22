@@ -1,0 +1,48 @@
+# ---------------------------------------------------------------------------
+# Money data never goes into git. The app keeps it in data/ and backups/.
+# ---------------------------------------------------------------------------
+data/
+backups/
+exports/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Spreadsheets, bank statements and app downloads hold real transactions.
+# (The tests build their made-up workbooks and CSVs in memory, so none are needed here.)
+*.xlsx
+*.xlsm
+*.xls
+*.csv
+finance_export_*.json
+
+# Personal planning notes (names, cards). Share a cleaned copy instead if needed.
+finance-tracker-SPEC.md
+
+# Secrets and local settings
+.env
+.env.*
+.streamlit/secrets.toml
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest_tmp/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors, OS and AI-assistant local files
+.DS_Store
+.idea/
+.vscode/
+.claude/
+.agents/
+CLAUDE.local.md

@@ -1,0 +1,18 @@
+# Local-only settings (SPEC section 10). The app must never be reachable from the network.
+[server]
+address = "127.0.0.1"          # reachable from this computer only; do not change to 0.0.0.0
+port = 8501
+enableXsrfProtection = true    # block forged form posts from other websites
+enableCORS = true              # only this page may talk to the app
+enableStaticServing = false    # no files are served from the project folder
+maxUploadSize = 25             # MB; spreadsheets, bank CSVs and JSON backups are far smaller
+fileWatcherType = "none"       # no reload on file changes (less CPU, no trouble in iCloud folders).
+                               # When editing the code, run with --server.fileWatcherType auto
+
+[browser]
+gatherUsageStats = false       # no telemetry
+
+[client]
+showSidebarNavigation = false  # the app draws its own page links (see core/ui.py)
+toolbarMode = "minimal"
+showErrorLinks = false         # no "Ask Google / ChatGPT" links on error messages
