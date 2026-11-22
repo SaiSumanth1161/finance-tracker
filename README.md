@@ -508,19 +508,6 @@ bill.
   (YouTube, [@MyOnlineTrainingHub](https://www.youtube.com/@MyOnlineTrainingHub), January 2025)
 - Guide and template: [Excel Income & Expense Tracker](https://www.myonlinetraininghub.com/excel-income-expense-tracker)
 
-If you like spreadsheets more than apps, go and get the original. It's free, it's well explained,
-and it's where the good ideas here came from:
-
-- a **categories table** where each subcategory belongs to a category and a type (income or
-  expense),
-- a **transactions table** you classify by subcategory,
-- **pivot-style reports** with green and pink **data bars**,
-- **year and month filters** (slicers in Excel, pills here), and
-- a small **dashboard** with income, expenses and net savings.
-
-What this project added on top: splitting bills between roommates, balances and settling up,
-savings tracking, recurring bills, budgets, bank-statement rules, and the app itself.
-
 **To be clear:**
 
 - This repository contains **no files, formulas, text or images** from the template, the guide
