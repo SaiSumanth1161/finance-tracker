@@ -219,6 +219,12 @@ A write goes through `db.session()`, then `ui.invalidate()`, and the page reruns
   changed, and say so.
 - Tests must never touch `data/finance.db`. Use the `conn` / `ledger` fixtures or `app_db`.
 
+**Third-party material**
+
+- The app was inspired by a free spreadsheet template (see README → Acknowledgements). Never add
+  files, formulas, text, screenshots or images from that template, its guide or video, or any other
+  third-party source. Write everything from scratch, and keep the Acknowledgements accurate.
+
 **Style**
 
 - Small functions with a docstring that says what and why. Plain English in the UI ("Money out",

@@ -13,6 +13,11 @@ charts, and tells everyone exactly how much they owe. No more spreadsheets with 
 > Your money data lives in one file on your laptop and never goes anywhere. It doesn't even phone
 > home to say hi.
 
+It all started as a spreadsheet built from a great free Excel template by Mynda Treacy
+([My Online Training Hub](https://www.myonlinetraininghub.com/excel-income-expense-tracker)).
+Then the roommates showed up, the splits got complicated, and the spreadsheet grew into this app.
+Full credit in [Acknowledgements](#-acknowledgements).
+
 ---
 
 ## 🧭 Table of contents
@@ -30,7 +35,8 @@ charts, and tells everyone exactly how much they owe. No more spreadsheets with 
 11. [Troubleshooting](#-troubleshooting)
 12. [FAQ](#-faq-frequently-avoided-questions)
 13. [For developers (and their AI assistants)](#-for-developers)
-14. [License](#-license)
+14. [Acknowledgements](#-acknowledgements)
+15. [License](#-license)
 
 ---
 
@@ -490,6 +496,43 @@ bill.
 - **Grouping by Person** in Explore always shows everyone, so the View filter isn't applied there.
 - **Demo rows** are tracked by ID, so *Clear demo data* can never delete a real entry.
 - **Duplicate last** keeps the original date.
+
+---
+
+## 🙏 Acknowledgements
+
+**The original spreadsheet.** This project began as a personal spreadsheet built from the free
+**Excel Income & Expense Tracker** template by **Mynda Treacy** of **My Online Training Hub**:
+
+- Video: [Excel Personal Finance Tracker 101 | Build & Automate Yours in Minutes](https://www.youtube.com/watch?v=ZdqNZizZ6N0)
+  (YouTube, [@MyOnlineTrainingHub](https://www.youtube.com/@MyOnlineTrainingHub), January 2025)
+- Guide and template: [Excel Income & Expense Tracker](https://www.myonlinetraininghub.com/excel-income-expense-tracker)
+
+If you like spreadsheets more than apps, go and get the original. It's free, it's well explained,
+and it's where the good ideas here came from:
+
+- a **categories table** where each subcategory belongs to a category and a type (income or
+  expense),
+- a **transactions table** you classify by subcategory,
+- **pivot-style reports** with green and pink **data bars**,
+- **year and month filters** (slicers in Excel, pills here), and
+- a small **dashboard** with income, expenses and net savings.
+
+What this project added on top: splitting bills between roommates, balances and settling up,
+savings tracking, recurring bills, budgets, bank-statement rules, and the app itself.
+
+**To be clear:**
+
+- This repository contains **no files, formulas, text or images** from the template, the guide
+  or the video. All code here was written from scratch for this project.
+- The MIT license below covers **this project's code only**. The template, guide and video belong
+  to their creator and stay under [their own terms](https://www.myonlinetraininghub.com/terms-conditions).
+- This project is **independent**. It is not affiliated with, sponsored by or endorsed by
+  My Online Training Hub or Mynda Treacy.
+
+**Built with:** [Streamlit](https://streamlit.io), [pandas](https://pandas.pydata.org),
+[Plotly](https://plotly.com/python/), [openpyxl](https://openpyxl.readthedocs.io),
+[SQLite](https://sqlite.org) and [pytest](https://pytest.org). Thanks to everyone who maintains them.
 
 ---
 
