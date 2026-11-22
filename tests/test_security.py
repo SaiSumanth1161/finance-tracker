@@ -72,3 +72,17 @@ def test_ai_assistant_instructions_keep_the_privacy_rules():
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     assert "Never open, read, print, copy, summarise or upload real data" in agents
     assert "@AGENTS.md" in (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+
+
+def test_files_from_older_versions_are_made_private(tmp_path):
+    folder, backups = tmp_path / "data", tmp_path / "backups"
+    folder.mkdir(mode=0o755)
+    backups.mkdir(mode=0o755)
+    path = folder / "finance.db"
+    path.touch(mode=0o644)
+    (backups / "finance_20260101_0000.db").touch(mode=0o644)
+    db.secure_existing_files(path, backups)
+    assert stat.S_IMODE(path.stat().st_mode) == 0o600
+    assert stat.S_IMODE(folder.stat().st_mode) == 0o700
+    assert stat.S_IMODE(backups.stat().st_mode) == 0o700
+    assert stat.S_IMODE((backups / "finance_20260101_0000.db").stat().st_mode) == 0o600

@@ -44,6 +44,7 @@ def _boot(path: str) -> bool:
         backup.auto_backup_if_due(path)
     except Exception:  # a failed backup must never stop the app from opening
         pass
+    db.secure_existing_files(path, backup.backup_dir())   # owner-only, also for files made by older versions
     return True
 
 

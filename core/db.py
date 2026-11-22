@@ -343,6 +343,19 @@ def _seed(conn) -> None:
     set_meta(conn, "seeded", 1)
 
 
+def secure_existing_files(path: str | Path | None = None, backups: Path | None = None) -> None:
+    """Tighten files made before owner-only permissions existed: the database, its folder and backups."""
+    target = Path(path or db_path())
+    if str(target) == ":memory:":
+        return
+    for item in (target.parent, target, Path(f"{target}-journal"), Path(f"{target}-wal")):
+        make_private(item)
+    if backups is not None and backups.is_dir():
+        make_private(backups)
+        for copy in backups.glob("*.db"):
+            make_private(copy)
+
+
 def init_schema(conn) -> None:
     """Create or upgrade the schema, seed a new database and (re)create the views."""
     version = _current_version(conn)
